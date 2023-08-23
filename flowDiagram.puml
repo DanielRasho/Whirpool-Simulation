@@ -1,0 +1,12 @@
+@startuml
+start
+:Ask for "distance"
+and
+"Swimming style";
+:Generate swimmers velocities;
+repeat :Calculate future position (parallel);
+:Print swimmers current positions;
+repeat while (A swimmer has reached the goal?) is (no)
+: Print winner;
+end
+@enduml
