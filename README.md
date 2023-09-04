@@ -1,1 +1,3 @@
 # Whirpool-Simulation
+
+#Simulacion de la competenecia de natacion whirlpool...
