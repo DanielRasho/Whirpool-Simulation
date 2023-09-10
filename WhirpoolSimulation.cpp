@@ -20,12 +20,12 @@
 #include <time.h>
 using namespace std;
 
-float randomFloat()
+float randomFloat() //Generates a float number between 0 - 1
 {
     return (float)(rand()) / (float)(RAND_MAX);
 }
 
-int randomInt(int a, int b)
+int randomInt(int a, int b) //Generates a integer between a - b
 {
     if (a > b)
         return randomInt(b, a);
@@ -35,7 +35,7 @@ int randomInt(int a, int b)
     
 }
 
-float randomFloat(int a, int b)
+float randomFloat(int a, int b) //Gets the float number by sum the integer and the float obtained previously
 {
     if (a > b)
         return randomFloat(b, a);
@@ -47,7 +47,7 @@ float randomFloat(int a, int b)
 
 main() {
 
-    srand((unsigned) time(NULL));
+    srand((unsigned) time(NULL)); //Seed Generator
 
     int distance; //Distance of the competition
 
