@@ -50,8 +50,10 @@ main() {
     srand((unsigned) time(NULL)); //Seed Generator
 
     int distance; //Distance of the competition
+    int estilo;
 
     float swimmers[8][4]; //Rows --> Swimmer    Column --> Swimming style
+                            //Swimming Styles: 0 -> Estilo libre, 1 -> Dorso, 2 -> Pecho, 3 -> Mariposa
 
     std::cout << "Ingrese la distancia total a nadar (50/100/200/400 m): "; 
     std::cin >> distance; //Scan for distance swum 
@@ -68,6 +70,17 @@ main() {
             }  
         }        
     }
+
+    printf("\n\nEstilos de nado:\n1: Estilo libre\n2: Dorso\n3: Pecho\n4: Mariposa\n");
+    std::cout << "Ingrese el estilo de nado (1 - 4): "; 
+    std::cin >> estilo; //Scan for swimming style 
+
+    printf("Los nadadores tienen las siguientes velocidades: ");
+    for (int i = 0; i < 8; i++)
+    {
+        printf("\nNadador %d: %f", i+1,swimmers[i][estilo-1]);
+    }
+    
     
     std::cout << std::endl;
 }
