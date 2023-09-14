@@ -18,34 +18,10 @@
 #include <random>
 #include <cstdlib>
 #include <time.h>
+#include "randomGenerator.h" // importing random generator funtions
 using namespace std;
 
-float randomFloat() //Generates a float number between 0 - 1
-{
-    return (float)(rand()) / (float)(RAND_MAX);
-}
-
-int randomInt(int a, int b) //Generates a integer between a - b
-{
-    if (a > b)
-        return randomInt(b, a);
-    if (a == b)
-        return a;
-    return a + (rand() % (b - a));
-    
-}
-
-float randomFloat(int a, int b) //Gets the float number by sum the integer and the float obtained previously
-{
-    if (a > b)
-        return randomFloat(b, a);
-    if (a == b)
-        return a;
-    
-    return (float)randomInt(a, b) + randomFloat();
-}
-
-main() {
+int main() {
 
     srand((unsigned) time(NULL)); //Seed Generator
 
@@ -56,7 +32,7 @@ main() {
                             //Swimming Styles: 0 -> Estilo libre, 1 -> Dorso, 2 -> Pecho, 3 -> Mariposa
 
     std::cout << "Ingrese la distancia total a nadar (50/100/200/400 m): "; 
-    std::cin >> distance; //Scan for distance swum 
+    std::cin >> distance; //Scan for distance to swim 
 
     #pragma omp parallel
     {
@@ -83,5 +59,6 @@ main() {
     
     
     std::cout << std::endl;
-}
 
+    return 0;
+}
