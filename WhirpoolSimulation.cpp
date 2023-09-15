@@ -28,6 +28,7 @@
 #include <cstdlib>
 #include <time.h>
 #include <unistd.h>
+
 using namespace std;
 
 #define PRINT_WIDTH 40
@@ -126,5 +127,29 @@ void clearScreen()
 #elif defined (__APPLE__)
     system("clear");
 #endif
+}
+
+
+// Winner determination
+/**
+ * the coefficient of variation creates a number "n" of speed variations, the variation will depend on its coefficient, 
+ * both numbers are randomly generated. The total time is calculated with the sum of your times at the variation points 
+ * (It can increase or decrease your speed, so it is generated from -2.5 to 2.5).
+*/
+void timeDetermination (int distance, float velocity )
+{
+    int variations = randomInt(2,6);
+    int varitonPoint = distance/variations;
+    
+    int variationCoefficient; 
+    int i = 0;
+    while (i<variations)
+    {
+        
+    }
+    
+    int time = distance / velocity;
+
+
 }
 
