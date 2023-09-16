@@ -23,6 +23,8 @@
 
 #include <cstdio>
 #include <iostream>
+#include <fstream>
+#include <string>
 #include <omp.h>
 #include <random>
 #include <cstdlib>
@@ -36,6 +38,8 @@ using namespace std;
 void printSwimmerPositions(int len, float position);
 void clearScreen();
 void semaforo();
+void printMedal(const std::string& filename);
+
 
 int main() {
 
@@ -114,10 +118,11 @@ int main() {
             {
                 statement = false;
                 clearScreen();
-                printf("El nadador numero: %d gano la batalla \n", (i+1));
+                printf("El nadador numero: %d gano la carrera \n", (i+1));
+                printMedal("banner.txt");
                 sleep(10);
         
-                //IRVING por favor poner quien gano pero lo quiero bonito
+                
 
             }
 
@@ -191,3 +196,21 @@ void semaforo()
     clearScreen();
 }
 
+void printMedal(const std::string& filename) {
+    std::ifstream file(filename);
+    std::string line;
+    std::string art;
+
+    if (file.is_open()) {
+        while (getline(file, line)) {
+            art += line + "\n";
+        }
+        file.close();
+    } else {
+        std::cerr << "No se pudo abrir el archivo " << filename << std::endl;
+        return;
+    }
+
+    // Mostrar el arte ASCII en la consola
+    std::cout << art << std::endl;
+}
