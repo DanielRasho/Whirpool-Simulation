@@ -28,7 +28,6 @@
 #include <cstdlib>
 #include <time.h>
 #include <unistd.h>
-
 using namespace std;
 
 #define PRINT_WIDTH 40
@@ -36,6 +35,7 @@ using namespace std;
 
 void printSwimmerPositions(int len, float position);
 void clearScreen();
+void semaforo();
 
 int main() {
 
@@ -80,8 +80,27 @@ int main() {
 // ####################
 
     // TODO: Andre, change the condition to stop loop when one swimmer win.
-    while (true){
-        // TODO: Andre must create the process to define future swimmers positions 
+    int tiempo = 0;
+    bool statement = true;
+    float pos = 0;
+    semaforo();
+
+    while (statement == true){
+        printf("Tiempo Actual: %d\n",tiempo);
+        #pragma omp parallel
+        {
+            #pragma omp parallel for  
+            for (int i = 0; i < NUM_SWIMMERS; i++)
+            {
+                pos = swimmers[i][0] * tiempo;
+                swimmers[i][1] = pos;
+                
+            }
+        }
+
+
+        // TODO: Andre must create the process to define future swimmers positions (In Progress)
+        
 
         // ## PRINTING SWIMMERS POSITIONS ##
         for(int i = 0; i < NUM_SWIMMERS; i++){
@@ -90,11 +109,27 @@ int main() {
             }
             printf("\n");
             printSwimmerPositions(distance, swimmers[i][1]);
+
+            if (swimmers[i][1] > distance)
+            {
+                statement = false;
+                clearScreen();
+                printf("El nadador numero: %d gano la batalla \n", (i+1));
+                sleep(10);
+        
+                //IRVING por favor poner quien gano pero lo quiero bonito
+
+            }
+
         }
-        sleep(2);
+        sleep(2); //Two seconds so refresh rate of every 2 seconds
+        tiempo = tiempo + 2;
+
+        
         clearScreen();
-        break;
+        
     }
+
 
     return 0;
 }
@@ -129,27 +164,30 @@ void clearScreen()
 #endif
 }
 
-
-// Winner determination
-/**
- * the coefficient of variation creates a number "n" of speed variations, the variation will depend on its coefficient, 
- * both numbers are randomly generated. The total time is calculated with the sum of your times at the variation points 
- * (It can increase or decrease your speed, so it is generated from -2.5 to 2.5).
-*/
-void timeDetermination (int distance, float velocity )
+//Print initial set mark go!
+void semaforo()
 {
-    int variations = randomInt(2,6);
-    int varitonPoint = distance/variations;
-    
-    int variationCoefficient; 
-    int i = 0;
-    while (i<variations)
-    {
-        
-    }
-    
-    int time = distance / velocity;
-
-
+    sleep(5);
+    clearScreen();
+    system("Color 0C");
+    printf("   ~~~     ~~~     ~~~\n");
+    printf("~~~~   ~~~ PREPARADOS ~~~   ~~~~   \n");
+    printf("  ~~~     ~~~     ~~~\n");
+    sleep(3);
+    clearScreen();
+    system("Color 06");
+    printf("   ~~~        ~~~     ~~~\n");
+    printf("~~~~   ~~ LISTOS ~~~   ~~~   \n");
+    printf("  ~~~     ~~~   ~~~\n");
+    sleep(3);
+    clearScreen();
+    system("Color 0A");
+    printf("~~  ~~~     ~~~    ~~~\n");
+    printf("~~~   ~~~ YA ~~~   ~~~~   \n");
+    printf("  ~~~    ~~~     ~~~\n");
+    sleep(3);
+    system("Color 00");
+    sleep(3);
+    clearScreen();
 }
 
