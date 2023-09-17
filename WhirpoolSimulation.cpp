@@ -88,9 +88,10 @@ int main() {
     bool statement = true;
     float pos = 0;
     semaforo();
+    bool applauseShown = false; // Variable para controlar si se ha mostrado el aplauso
 
     while (statement == true){
-        printf("Tiempo Actual: %d\n",tiempo);
+        printf("Tiempo Actual: %d\n", tiempo);
         #pragma omp parallel
         {
             #pragma omp parallel for  
@@ -102,39 +103,51 @@ int main() {
             }
         }
 
-
-        // TODO: Andre must create the process to define future swimmers positions (In Progress)
-        
-
         // ## PRINTING SWIMMERS POSITIONS ##
-        for(int i = 0; i < NUM_SWIMMERS; i++){
-            for(int j = 0; j < PRINT_WIDTH; j++){
-                printf("#");
-            }
-            printf("\n");
-            printSwimmerPositions(distance, swimmers[i][1]);
+        if (statement) {
+            for(int i = 0; i < NUM_SWIMMERS; i++){
+                for(int j = 0; j < PRINT_WIDTH; j++){
+                    printf("#");
+                }
+                printf("\n");
+                printSwimmerPositions(distance, swimmers[i][1]);
 
-            if (swimmers[i][1] > distance)
-            {
-                statement = false;
-                clearScreen();
-                printf("El nadador numero: %d gano la carrera \n", (i+1));
-                printMedal("banner.txt");
-                sleep(10);
-        
+                if (swimmers[i][1] > distance)
+                {
+                    statement = false;
+                    clearScreen();
+                    printf("   ~~~     ~~~     ~~~\n");
+                    printf("~~~~   ~~~ EL GANADOR ES... ~~~   ~~~~   \n");
+                    printf("  ~~~     ~~~     ~~~\n");
+                    sleep(3);
+                    printMedal("drumroll.txt"); // Llama a la función printMedal para mostrar la medalla
+                    sleep(5);
+                    clearScreen();
                 
+                    printf("~~~~   ~~~ EL NADADOR DEL CARRIL %d", (i+1),"~~~   ~~~~");
+            
+                    sleep(2);
 
+                    printMedal("banner.txt"); // Llama a la función printMedal para mostrar un banner
+                    sleep(5);
+                    clearScreen();
+                    
+                    if (!applauseShown) {
+                        printMedal("applause.txt"); // Llama a la función printMedal para mostrar aplausos
+                        applauseShown = true; // Marca que se ha mostrado el aplauso
+                    }
+                }
             }
-
         }
+
+        if (applauseShown) {
+            break; // Sal del bucle principal después de mostrar el aplauso
+        }
+
         sleep(2); //Two seconds so refresh rate of every 2 seconds
         tiempo = tiempo + 2;
-
-        
         clearScreen();
-        
     }
-
 
     return 0;
 }
@@ -214,3 +227,4 @@ void printMedal(const std::string& filename) {
     // Mostrar el arte ASCII en la consola
     std::cout << art << std::endl;
 }
+
