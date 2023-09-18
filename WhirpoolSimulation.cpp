@@ -131,17 +131,12 @@ int main() {
                     printMedal("banner.txt"); // Llama a la función printMedal para mostrar un banner
                     sleep(5);
                     clearScreen();
+                    printMedal("applause.txt");
+                    break;
                     
-                    if (!applauseShown) {
-                        printMedal("applause.txt"); // Llama a la función printMedal para mostrar aplausos
-                        applauseShown = true; // Marca que se ha mostrado el aplauso
-                    }
+
                 }
             }
-        }
-
-        if (applauseShown) {
-            break; // Sal del bucle principal después de mostrar el aplauso
         }
 
         sleep(2); //Two seconds so refresh rate of every 2 seconds
