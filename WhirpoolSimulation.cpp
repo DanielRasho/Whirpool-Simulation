@@ -83,7 +83,6 @@ int main() {
 // ###  MAIN LOOP   ###
 // ####################
 
-    // TODO: Andre, change the condition to stop loop when one swimmer win.
     int tiempo = 0;
     bool statement = true;
     float pos = 0;
@@ -132,13 +131,15 @@ int main() {
                     sleep(5);
                     clearScreen();
                     printMedal("applause.txt");
+                    statement=false;
                     break;
-                    
-
                 }
             }
         }
 
+        if (statement == false) {
+            break;
+        }
         sleep(2); //Two seconds so refresh rate of every 2 seconds
         tiempo = tiempo + 2;
         clearScreen();
