@@ -40,6 +40,12 @@ void clearScreen();
 void semaforo();
 void printMedal(const std::string& filename);
 
+// Representation of a swimmer
+struct{
+    float position;
+    float velocity;
+} Swimmer;
+
 
 int main() {
 
