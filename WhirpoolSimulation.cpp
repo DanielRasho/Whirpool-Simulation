@@ -28,8 +28,11 @@
 #include <omp.h>
 #include <random>
 #include <cstdlib>
+#include <stdint.h>
+#include <stdlib.h>
 #include <time.h>
 #include <unistd.h>
+#include <pthread.h>
 using namespace std;
 
 #define PRINT_WIDTH 40
@@ -41,10 +44,10 @@ void semaforo();
 void printMedal(const std::string& filename);
 
 // Representation of a swimmer
-struct{
+struct Swimmer{
     float position;
     float velocity;
-} Swimmer;
+};
 
 
 int main() {
@@ -58,7 +61,8 @@ int main() {
     int distance; //Distance of the competition
     int estilo;
 
-    float swimmers[NUM_SWIMMERS][2]; //Rows --> Swimmer    Column1 --> Swimming style Column2 --> position
+    Swimmer swimmers[NUM_SWIMMERS];
+    //float swimmers[NUM_SWIMMERS][2]; //Rows --> Swimmer    Column1 --> Swimming style Column2 --> position
                                     //Swimming Styles: 0 -> Estilo libre, 1 -> Dorso, 2 -> Pecho, 3 -> Mariposa
 
     std::cout << "Ingrese la distancia total a nadar (50/100/200/400 m): "; 
@@ -73,15 +77,18 @@ int main() {
         #pragma omp parallel for  
         for (int i = 0; i < NUM_SWIMMERS; i++)
         {
-            swimmers[i][0] = randomFloat(1, 3); //Generate a random float number beetween 1 and 3
-            swimmers[i][1] = 0; // Set initial position
+            swimmers[i].position = 0;
+            swimmers[i].velocity = randomFloat(1,3);
+            //swimmers[i] = randomFloat(1, 3); //Generate a random float number beetween 1 and 3
+            //swimmers[i] = 0; // Set initial position
         }        
     }
 
     printf("Los nadadores tienen las siguientes velocidades (m/s): ");
     for (int i = 0; i < NUM_SWIMMERS; i++)
     {
-        printf("\nNadador %d: %f", i+1,swimmers[i][0]);
+        printf("\nNadador %d: %f", i+1,swimmers[i].velocity);
+        //printf("\nNadador %d: %f", i+1,swimmers[i][0]);
     }
     std::cout << std::endl;
     
@@ -94,6 +101,11 @@ int main() {
     float pos = 0;
     semaforo();
     bool applauseShown = false; // Variable para controlar si se ha mostrado el aplauso
+    pthread_t tid[NUM_SWIMMERS];
+    pthread_attr_t attr;
+    pthread_attr_init(&attr);
+    pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
+
 
     while (statement == true){
         printf("Tiempo Actual: %d\n", tiempo);
@@ -102,9 +114,8 @@ int main() {
             #pragma omp parallel for  
             for (int i = 0; i < NUM_SWIMMERS; i++)
             {
-                pos = swimmers[i][0] * tiempo;
-                swimmers[i][1] = pos;
-                
+                pos = swimmers[i].velocity * tiempo;
+                swimmers[i].position = pos;
             }
         }
 
@@ -117,7 +128,7 @@ int main() {
                 printf("\n");
                 printSwimmerPositions(distance, swimmers[i][1]);
 
-                if (swimmers[i][1] > distance)
+                if (swimmers[i].position > distance)
                 {
                     statement = false;
                     clearScreen();
