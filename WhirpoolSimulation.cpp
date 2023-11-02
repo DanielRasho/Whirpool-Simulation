@@ -25,7 +25,6 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <omp.h>
 #include <random>
 #include <cstdlib>
 #include <stdint.h>
@@ -49,21 +48,22 @@ struct Swimmer{
     float velocity;
 };
 
+// ####################
+//  PTHREAD FUNCTIONS
+// ####################
 
 int main() {
 
-// #######################################
-// ###  INITALIZIN SWIMMERS PARAMETERS ###
-// #######################################
+// ########################################
+// ###  INITALIZING SWIMMERS PARAMETERS ###
+// ########################################
 
     srand((unsigned) time(NULL)); //Seed Generator
 
     int distance; //Distance of the competition
     int estilo;
-
+    pthread_t threads [NUM_SWIMMERS];
     Swimmer swimmers[NUM_SWIMMERS];
-    //float swimmers[NUM_SWIMMERS][2]; //Rows --> Swimmer    Column1 --> Swimming style Column2 --> position
-                                    //Swimming Styles: 0 -> Estilo libre, 1 -> Dorso, 2 -> Pecho, 3 -> Mariposa
 
     std::cout << "Ingrese la distancia total a nadar (50/100/200/400 m): "; 
     std::cin >> distance; //Scan for distance to swim 
@@ -71,17 +71,21 @@ int main() {
     printf("\n\nEstilos de nado:\n1: Estilo libre\n2: Dorso\n3: Pecho\n4: Mariposa\n");
     std::cout << "Ingrese el estilo de nado (1 - 4): "; 
     std::cin >> estilo; //Scan for swimming style 
-
-    #pragma omp parallel
+    
+    // GENERATING STATS
+    for (int i = 0; i < NUM_SWIMMERS; i++)
     {
-        #pragma omp parallel for  
-        for (int i = 0; i < NUM_SWIMMERS; i++)
-        {
-            swimmers[i].position = 0;
-            swimmers[i].velocity = randomFloat(1,3);
-            //swimmers[i] = randomFloat(1, 3); //Generate a random float number beetween 1 and 3
-            //swimmers[i] = 0; // Set initial position
-        }        
+        // Here will be your pthread creation
+        // Andre el codigo de abajo es el que tienes que paralelizar
+
+        // swimmers[i].position = 0;
+        // swimmers[i].velocity = randomFloat(1,3);
+        // pthread_create(&threads[i], NULL, <tu funcion>, (void*) &swimmers[i]);
+    }
+
+    for (int i = 0; i < NUM_SWIMMERS; i++){
+        // Here the thread will join
+        pthread_join(threads[i], NULL);
     }
 
     printf("Los nadadores tienen las siguientes velocidades (m/s): ");
@@ -101,7 +105,6 @@ int main() {
     float pos = 0;
     semaforo();
     bool applauseShown = false; // Variable para controlar si se ha mostrado el aplauso
-    pthread_t tid[NUM_SWIMMERS];
     pthread_attr_t attr;
     pthread_attr_init(&attr);
     pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
@@ -109,14 +112,19 @@ int main() {
 
     while (statement == true){
         printf("Tiempo Actual: %d\n", tiempo);
-        #pragma omp parallel
+
+        // CALCULATING NEXT POSITION
+        for (int i = 0; i < NUM_SWIMMERS; i++)
         {
-            #pragma omp parallel for  
-            for (int i = 0; i < NUM_SWIMMERS; i++)
-            {
-                pos = swimmers[i].velocity * tiempo;
-                swimmers[i].position = pos;
-            }
+        // Here will be your pthread creation
+        // Prince Irving el codigo de abajo es el que tienes que paralelizar
+        //    pos = swimmers[i].velocity * tiempo;
+        //    swimmers[i].position = pos;
+        // pthread_create(&threads[i], NULL, <tu funcion>, (void*) &swimmers[i]);
+        }
+        for (int i = 0; i < NUM_SWIMMERS; i++){
+            // Here the thread will join
+            pthread_join(threads[i], NULL);
         }
 
         // ## PRINTING SWIMMERS POSITIONS ##
@@ -126,7 +134,7 @@ int main() {
                     printf("#");
                 }
                 printf("\n");
-                printSwimmerPositions(distance, swimmers[i][1]);
+                printSwimmerPositions(distance, swimmers[i].position);
 
                 if (swimmers[i].position > distance)
                 {
