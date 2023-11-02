@@ -52,26 +52,7 @@ struct Swimmer{
 //  PTHREAD FUNCTIONS
 // ####################
 
-void* genswimm(void *arg) {
-
-    pthread_mutex_lock(&lock);
-
-    for (int i = 0; i < NUM_SWIMMERS; i++)
-    {
-        
-        swimmers[i].position = 0;
-        swimmers[i].velocity = randomFloat(1,3);        
-    }
-
-     pthread_mutex_unlock(&lock);
-
-     return NULL;
-
-}
-
-
 int main() {
-
 
 // ########################################
 // ###  INITALIZING SWIMMERS PARAMETERS ###
@@ -81,7 +62,6 @@ int main() {
 
     int distance; //Distance of the competition
     int estilo;
-    int errnadador;
     pthread_t threads [NUM_SWIMMERS];
     Swimmer swimmers[NUM_SWIMMERS];
 
@@ -95,8 +75,12 @@ int main() {
     // GENERATING STATS
     for (int i = 0; i < NUM_SWIMMERS; i++)
     {
+        // Here will be your pthread creation
         // Andre el codigo de abajo es el que tienes que paralelizar
-        errnadador = pthread_create(&(threads[i]), NULL, &genswimm, NULL);
+
+        // swimmers[i].position = 0;
+        // swimmers[i].velocity = randomFloat(1,3);
+        // pthread_create(&threads[i], NULL, <tu funcion>, (void*) &swimmers[i]);
     }
 
     for (int i = 0; i < NUM_SWIMMERS; i++){
@@ -264,4 +248,3 @@ void printMedal(const std::string& filename) {
     // Mostrar el arte ASCII en la consola
     std::cout << art << std::endl;
 }
-
