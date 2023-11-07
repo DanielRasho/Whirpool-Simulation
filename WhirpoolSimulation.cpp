@@ -47,23 +47,47 @@ struct Swimmer{
     float position;
     float velocity;
 };
+Swimmer swimmers[NUM_SWIMMERS];
+pthread_t threads [NUM_SWIMMERS];
+pthread_mutex_t lock;
+
+
+
+int distance; //Distance of the competition
+int estilo;
+int counter;
 
 // ####################
 //  PTHREAD FUNCTIONS
 // ####################
+
+void* genswimers(void *arg)
+{
+    pthread_mutex_lock(&lock);		
+    //Seed Generator			//establecer bloqueo antes utilizar recurso
+    // Get a random number
+	// Create a random number generator
+   
+    std::mt19937 gen((1+counter));
+    std::uniform_real_distribution<float> dist(1.0, 3.0);
+
+    unsigned long i = 0;
+    					//incialización variable utilizada para retardo
+    swimmers[counter].position = 0;
+    swimmers[counter].velocity = dist(gen); //poner random float
+    counter += 1;			
+
+    pthread_mutex_unlock(&lock);
+    return NULL;
+}
 
 int main() {
 
 // ########################################
 // ###  INITALIZING SWIMMERS PARAMETERS ###
 // ########################################
-
     srand((unsigned) time(NULL)); //Seed Generator
-
-    int distance; //Distance of the competition
-    int estilo;
-    pthread_t threads [NUM_SWIMMERS];
-    Swimmer swimmers[NUM_SWIMMERS];
+    int distance;
 
     std::cout << "Ingrese la distancia total a nadar (50/100/200/400 m): "; 
     std::cin >> distance; //Scan for distance to swim 
@@ -73,14 +97,19 @@ int main() {
     std::cin >> estilo; //Scan for swimming style 
     
     // GENERATING STATS
-    for (int i = 0; i < NUM_SWIMMERS; i++)
+    int i = 0;
+    int err;
+    if (pthread_mutex_init(&lock, NULL) != 0) 						//inicializacion de mutex no completada
     {
-        // Here will be your pthread creation
-        // Andre el codigo de abajo es el que tienes que paralelizar
-
-        // swimmers[i].position = 0;
-        // swimmers[i].velocity = randomFloat(1,3);
-        // pthread_create(&threads[i], NULL, <tu funcion>, (void*) &swimmers[i]);
+        printf("\n mutex init failed\n");
+        return 1;
+    }
+    while(i < NUM_SWIMMERS)													//se crean solo 2 hilos
+    {
+        err = pthread_create(&(threads[i]), NULL, &genswimers, NULL); 	//creacion de hilos sin paso de parametros
+        if (err != 0)
+            printf("\ncan't create thread :[%s]", strerror(err));	//impresion de mensaje si el hilo no se crea correctamente
+        i++;
     }
 
     for (int i = 0; i < NUM_SWIMMERS; i++){
@@ -169,6 +198,8 @@ int main() {
         tiempo = tiempo + 2;
         clearScreen();
     }
+
+    pthread_mutex_destroy(&lock);	
 
     return 0;
 }
