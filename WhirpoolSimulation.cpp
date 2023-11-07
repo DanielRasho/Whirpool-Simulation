@@ -37,16 +37,19 @@ using namespace std;
 #define PRINT_WIDTH 40
 #define NUM_SWIMMERS 8
 
-void printSwimmerPositions(int len, float position);
-void clearScreen();
-void semaforo();
-void printMedal(const std::string& filename);
+void* updateSwimmerPosition(void*);
 
 // Representation of a swimmer
 struct Swimmer{
     float position;
     float velocity;
 };
+
+void printSwimmerPositions(int len, float position);
+void clearScreen();
+void semaforo();
+void printMedal(const std::string& filename);
+
 Swimmer swimmers[NUM_SWIMMERS];
 pthread_t threads [NUM_SWIMMERS];
 pthread_mutex_t lock;
@@ -107,8 +110,10 @@ int main() {
     while(i < NUM_SWIMMERS)													//se crean solo 2 hilos
     {
         err = pthread_create(&(threads[i]), NULL, &genswimers, NULL); 	//creacion de hilos sin paso de parametros
-        if (err != 0)
+        if (err){
             printf("\ncan't create thread :[%s]", strerror(err));	//impresion de mensaje si el hilo no se crea correctamente
+            exit(-1);
+        }
         i++;
     }
 
@@ -145,11 +150,12 @@ int main() {
         // CALCULATING NEXT POSITION
         for (int i = 0; i < NUM_SWIMMERS; i++)
         {
-        // Here will be your pthread creation
-        // Prince Irving el codigo de abajo es el que tienes que paralelizar
-        //    pos = swimmers[i].velocity * tiempo;
-        //    swimmers[i].position = pos;
-        // pthread_create(&threads[i], NULL, <tu funcion>, (void*) &swimmers[i]);
+            // Crear un hilo para actualizar la posición del nadador
+            err = pthread_create(&threads[i], &attr, updateSwimmerPosition, (void*) &swimmers[i]);
+            if (err) {
+                printf("Error al crear el hilo: %d\n", err);
+                exit(-1);
+            }
         }
         for (int i = 0; i < NUM_SWIMMERS; i++){
             // Here the thread will join
@@ -218,6 +224,13 @@ void printSwimmerPositions(int distance, float position){
             printf("-");                    // Print remaining space
     }
     printf("\n");
+}
+
+// Función para calcular la posición del nadador
+void* updateSwimmerPosition(void* arg) {
+    Swimmer* swimmer = (Swimmer*)arg; // Cast del argumento a un puntero de Swimmer
+    swimmer->position += swimmer->velocity; // Actualizar posición
+    return NULL; // Retornar NULL ya que no se requiere pasar información de vuelta
 }
 
 // Clear terminal screen.
