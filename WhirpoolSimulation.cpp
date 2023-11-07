@@ -53,6 +53,10 @@ void printMedal(const std::string& filename);
 Swimmer swimmers[NUM_SWIMMERS];
 pthread_t threads [NUM_SWIMMERS];
 pthread_mutex_t lock;
+time_t currentTime = time(0);
+int currentTimeInt = static_cast<int>(currentTime);
+std::mt19937 gen(currentTimeInt);
+std::uniform_real_distribution<float> dist(1.0, 3.0);
 
 
 
@@ -71,8 +75,8 @@ void* genswimers(void *arg)
     // Get a random number
 	// Create a random number generator
    
-    std::mt19937 gen((1+counter));
-    std::uniform_real_distribution<float> dist(1.0, 3.0);
+    
+
 
     unsigned long i = 0;
     					//incialización variable utilizada para retardo
