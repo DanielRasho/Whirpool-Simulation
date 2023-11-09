@@ -74,14 +74,11 @@ void* genswimers(void *arg)
     //Seed Generator			//establecer bloqueo antes utilizar recurso
     // Get a random number
 	// Create a random number generator
-   
-    
-
 
     unsigned long i = 0;
     					//incialización variable utilizada para retardo
     swimmers[counter].position = 0;
-    swimmers[counter].velocity = dist(gen); //poner random float
+    swimmers[counter].velocity = std::round(dist(gen)*100)/100.0; //poner random float
     counter += 1;			
 
     pthread_mutex_unlock(&lock);
